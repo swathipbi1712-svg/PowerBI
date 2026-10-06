@@ -1,0 +1,7 @@
+role 'Territory Manager'
+	modelPermission: read
+
+	tablePermission 'Dim Agent' = [territory] = LOOKUPVALUE('Dim Agent'[territory],'Dim Agent'[agent_name],USERPRINCIPALNAME())
+
+	annotation PBI_Id = 0427aa5ebe404e559f5a056dcce42a47
+

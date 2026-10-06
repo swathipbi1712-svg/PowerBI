@@ -1,0 +1,43 @@
+relationship b5bc230a-a655-4fb5-85de-cc504e124726
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Dim Agent'.join_date
+	toColumn: LocalDateTable_ad172263-726d-422d-b30e-242aefb57511.Date
+
+relationship 9e2bf4c3-82d3-4958-beab-5e8009c559cd
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Dim Date'.date
+	toColumn: LocalDateTable_b63b3f71-6323-44cd-89df-76a37a41b1d6.Date
+
+relationship AutoDetected_e476630c-80b6-4d1c-8a50-a9e060ca485a
+	fromColumn: 'Fact Persistency'.product_id
+	toColumn: 'Dim Product'.product_id
+
+relationship AutoDetected_84f59aa0-d6b9-46bf-aa27-011f8c413a23
+	fromColumn: 'Fact Sales'.product_id
+	toColumn: 'Dim Product'.product_id
+
+relationship AutoDetected_bc360e28-b28c-470e-aadf-5418155b7256
+	fromColumn: 'Fact Persistency'.agent_id
+	toColumn: 'Dim Agent'.agent_id
+
+relationship AutoDetected_258c7c03-e9cd-4133-aad9-59ce345c5326
+	fromColumn: 'Fact Sales'.agent_id
+	toColumn: 'Dim Agent'.agent_id
+
+relationship AutoDetected_94e35d49-a3f4-40f2-a678-65ee4e61a443
+	fromColumn: 'Fact Target'.agent_id
+	toColumn: 'Dim Agent'.agent_id
+
+relationship AutoDetected_c6d4bf8e-aad6-4e6e-beec-e740d717c365
+	fromColumn: 'Fact Sales'.date_key
+	toColumn: 'Dim Date'.date_key
+
+relationship 2d4992cd-d676-dc1f-bc8e-18444cec534e
+	fromColumn: 'Fact Persistency'.issue_date_key
+	toColumn: 'Dim Date'.date_key
+
+relationship b85955f0-8961-fc40-a9f9-d37d543c9e29
+	isActive: false
+	fromColumn: 'Fact Persistency'.renewal_due_date_key
+	toColumn: 'Dim Date'.date_key
+

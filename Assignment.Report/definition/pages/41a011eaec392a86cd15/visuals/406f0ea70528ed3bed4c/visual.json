@@ -1,0 +1,238 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "name": "406f0ea70528ed3bed4c",
+  "position": {
+    "x": 18.177514792899409,
+    "y": 84.828402366863912,
+    "z": 1000,
+    "height": 207.52662721893492,
+    "width": 940.68639053254435,
+    "tabOrder": 1000
+  },
+  "visual": {
+    "visualType": "multiRowCard",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Dim Agent"
+                    }
+                  },
+                  "Property": "agent_name"
+                }
+              },
+              "queryRef": "Dim Agent.agent_name",
+              "nativeQueryRef": "agent_name"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Dim Agent"
+                    }
+                  },
+                  "Property": "territory"
+                }
+              },
+              "queryRef": "Dim Agent.territory",
+              "nativeQueryRef": "Territory",
+              "displayName": "Territory"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "APE YTD"
+                }
+              },
+              "queryRef": "_Measures.APE YTD",
+              "nativeQueryRef": "APE YTD"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Agent Rank by APE"
+                }
+              },
+              "queryRef": "_Measures.Agent Rank by APE",
+              "nativeQueryRef": "Agent Rank",
+              "displayName": "Agent Rank"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "APE MoM Growth %"
+                }
+              },
+              "queryRef": "_Measures.APE MoM Growth %",
+              "nativeQueryRef": "MoM Growth%",
+              "displayName": "MoM Growth%"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Persistency Rate"
+                }
+              },
+              "queryRef": "_Measures.Persistency Rate",
+              "nativeQueryRef": "Persistency Rate"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "_Measures"
+                  }
+                },
+                "Property": "APE YTD"
+              }
+            },
+            "direction": "Descending"
+          }
+        ]
+      }
+    },
+    "objects": {
+      "card": [
+        {
+          "properties": {
+            "cardPadding": {
+              "expr": {
+                "Literal": {
+                  "Value": "20D"
+                }
+              }
+            },
+            "barWeight": {
+              "expr": {
+                "Literal": {
+                  "Value": "2D"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "d02a2784e57e75aaec49",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": "APE YTD"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "56f246e59c18ae1b8320",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": "Agent Rank by APE"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "1f03a71870cb94bca79d",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": "APE MoM Growth %"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "f4f1c2c12eb9d44eba40",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": "Persistency Rate"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "eaf1315b42893146a1bc",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Dim Agent"
+              }
+            },
+            "Property": "agent_name"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "eaff8133b5ac050047c2",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Dim Agent"
+              }
+            },
+            "Property": "territory"
+          }
+        },
+        "type": "Categorical"
+      }
+    ]
+  }
+}

@@ -1,0 +1,221 @@
+createOrReplace
+
+	table _Measures
+		lineageTag: d98c0dd5-379e-42b9-a9d5-6b5378a6aaa6
+
+		measure 'APE YTD' = ```
+				
+				 /// Year-to-date cumulative APE
+				            CALCULATE(
+				                SUM('Fact Sales'[ape_usd]),
+				                DATESYTD('Dim Date'[date])
+				            )
+				      
+				
+				```
+			formatString: $#,##0.00
+			displayFolder: Sales Performance
+			lineageTag: 0263c383-192a-4751-ba2b-5938edf186cb
+
+			annotation PBI_FormatHint = {"isCustom":true}
+
+		measure 'APE MoM Growth %' =
+				
+				/// Month-on-month percentage change in APE
+				            VAR CurrentMonth = [APE Total]
+				            VAR PrevMonth =
+				                CALCULATE(
+				                    SUM('Fact Sales'[ape_usd]),
+				                    DATEADD('Dim Date'[date], -1, MONTH)
+				                )
+				            RETURN
+				                DIVIDE(CurrentMonth - PrevMonth, PrevMonth)
+			formatString: 0.00%
+            displayFolder: Sales Performance					
+			lineageTag: ae4e7ef1-601e-4e61-8216-01834892f0fa
+
+		measure 'APE Rolling 3 Months' = ```
+				
+				
+				        /// Trailing 3-month APE total
+				            CALCULATE(
+				                SUM('Fact Sales'[ape_usd]),
+				                DATESINPERIOD(
+				                    'Dim Date'[date],
+				                    LASTDATE('Dim Date'[date]),
+				                    -3,
+				                    MONTH
+				                )
+				            )
+				```
+			formatString: $#,##0.00
+            displayFolder: Sales Performance	
+			lineageTag: cb197826-9719-4ea7-824a-9e15b8805db0
+
+			annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+		measure 'APE vs Target %' =
+				
+				
+				/// Actual APE vs monthly target
+				        /// Uses TREATAS to bridge Dim Date year/month context to Fact Target
+				            VAR ActualAPE =
+				                SUM('Fact Sales'[ape_usd])
+				            VAR TargetAPE =
+				                CALCULATE(
+				                    SUM('Fact Target'[ape_target_usd]),
+				                    TREATAS(
+				                        SUMMARIZE(
+				                            'Dim Date',
+				                            'Dim Date'[year],
+				                            'Dim Date'[month]
+				                        ),
+				                        'Fact Target'[year],
+				                        'Fact Target'[month]
+				                    )
+				                )
+				            RETURN
+				                DIVIDE(ActualAPE, TargetAPE)
+			formatString: 0.00%
+            displayFolder: Sales Performance					
+			lineageTag: 5c5df874-a9ab-4ac9-b436-cdefa66c7328
+
+
+			annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+		measure 'Persistency Rate' =
+				
+				
+				/// % of issued-cohort policies (renewed + lapsed + grace)
+				        /// that renewed
+				        /// Date slicer filters by issue_date active relationship
+				            DIVIDE(
+				                COUNTROWS(
+				                    FILTER(
+				                        'Fact Persistency',
+				                        'Fact Persistency'[renewal_status] = "renewed"
+				                    )
+				                ),
+				                COUNTROWS(
+				                    FILTER(
+				                        'Fact Persistency',
+				                        'Fact Persistency'[renewal_status]
+				                            IN {"renewed", "lapsed", "grace"}
+				                    )
+				                )
+				            )
+			formatString: 0.00%
+            displayFolder: Persistency				
+			lineageTag: a4166723-33b8-45f6-9ca9-94182bf35bd5
+
+			annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+		measure 'Active Policy Count' =
+				
+				
+				/// In-force policy count - renewed + grace period
+				        /// Semi-additive, not a SUM
+				            CALCULATE(
+				                COUNTROWS('Fact Persistency'),
+				                'Fact Persistency'[renewal_status]
+				                    IN {"renewed", "grace"}
+				            )
+			formatString: #,##0
+            displayFolder: Persistency
+			lineageTag: 3c7678e7-a4c6-4c43-aa44-1f45f763ed1b
+
+		measure 'Active Agent Count' = ```
+				
+				
+				        /// Distinct agents with active flag = 1
+				            CALCULATE(
+				                DISTINCTCOUNT('Dim Agent'[agent_id]),
+				                'Dim Agent'[active_flag] = 1
+				            )
+				```
+			formatString: #,##0
+            displayFolder: Agent
+			lineageTag: 2b132c2f-fda0-46da-90e0-722ba02e502b
+
+		measure 'Agent Rank by APE' = ```
+				
+				
+				        /// Rank of the selected agent by APE among known agents only.
+				        /// ALL() ignores agent slicer.
+				        /// FILTER removes blank agent_name rows.
+				        /// This prevents orphan Fact Sales records from being
+				        /// combined into a blank agent row.
+				            IF(
+				                HASONEVALUE('Dim Agent'[agent_id])
+				                    && NOT ISBLANK(
+				                        SELECTEDVALUE('Dim Agent'[agent_name])
+				                    ),
+				                RANKX(
+				                    FILTER(
+				                        ALL('Dim Agent'),
+				                        NOT ISBLANK('Dim Agent'[agent_name])
+				                    ),
+				                    CALCULATE(
+				                        SUM('Fact Sales'[ape_usd])
+				                    ),
+				                    ,
+				                    DESC,
+				                    DENSE
+				                )
+				            )
+				```
+			formatString: #,##0
+            displayFolder: Agent
+			lineageTag: aad5f67b-d058-4285-aac1-488247a1a216
+
+		measure 'APE Total' = ```
+				
+				
+				 /// Total APE in current filter context
+				            SUM('Fact Sales'[ape_usd])
+				```
+			formatString: $#,##0.00
+            displayFolder: Sales Performance	
+			lineageTag: f9de94b1-985f-4598-b47b-8fb702c227c3
+
+			annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+		measure 'APE Target Total' = ```
+				
+				
+				 /// Total APE target for the current date context
+				        /// Uses TREATAS to bridge Dim Date year/month to Fact Target
+				            CALCULATE(
+				                SUM('Fact Target'[ape_target_usd]),
+				                TREATAS(
+				                    SUMMARIZE(
+				                        'Dim Date',
+				                        'Dim Date'[year],
+				                        'Dim Date'[month]
+				                    ),
+				                    'Fact Target'[year],
+				                    'Fact Target'[month]
+				                )
+				            )
+				```
+			formatString: $#,##0.00
+            displayFolder: Sales Performance	
+			lineageTag: 0ea3de8d-2c49-4973-bd82-b27ca97ba371
+
+			annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+		column placeholder
+			formatString: 0
+			lineageTag: 5222867e-6619-44cf-b62f-61d61c0dff8d
+			summarizeBy: sum
+			isNameInferred
+			sourceColumn: [placeholder]
+
+			annotation SummarizationSetBy = Automatic
+
+		partition _Measures = calculated
+			mode: import
+			source = ROW("placeholder",1)
+
+		annotation PBI_Id = 85d810eaa7b745e68cf04a815766c854
+

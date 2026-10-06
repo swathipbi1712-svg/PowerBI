@@ -1,0 +1,56 @@
+createOrReplace
+
+	table _Measures
+		lineageTag: d98c0dd5-379e-42b9-a9d5-6b5378a6aaa6
+
+		/// Year-to-date cumulative APE
+        measure 'APE YTD' =
+                 CALCULATE(
+                   SUM('Fact Sales'[ape_usd]),
+                   DATESYTD('Dim Date'[date])
+                 )
+            formatString: $#,##0.00
+            displayFolder: Sales Performance
+
+        /// Month-on-month percentage change in APE
+        measure 'APE MoM Growth %' =
+            VAR CurrentMonth = [APE Total]
+            VAR PrevMonth =
+                CALCULATE(
+                    SUM('Fact Sales'[ape_usd]),
+                    DATEADD('Dim Date'[date], -1, MONTH)
+                )
+            RETURN
+                DIVIDE(CurrentMonth - PrevMonth, PrevMonth)
+        formatString: 0.00%
+        displayFolder: Sales Performance
+
+        /// Trailing 3-month APE total
+        measure 'APE Rolling 3 Months' =
+            CALCULATE(
+                SUM('Fact Sales'[ape_usd]),
+                DATESINPERIOD(
+                    'Dim Date'[date],
+                    LASTDATE('Dim Date'[date]),
+                    -3,
+                    MONTH
+                )
+            )
+            formatString: $#,##0.00
+            displayFolder: Sales Performance
+
+		column placeholder
+			formatString: 0
+			lineageTag: 5222867e-6619-44cf-b62f-61d61c0dff8d
+			summarizeBy: sum
+			isNameInferred
+			sourceColumn: [placeholder]
+
+			annotation SummarizationSetBy = Automatic
+
+		partition _Measures = calculated
+			mode: import
+			source = ROW("placeholder",1)
+
+		annotation PBI_Id = 85d810eaa7b745e68cf04a815766c854
+

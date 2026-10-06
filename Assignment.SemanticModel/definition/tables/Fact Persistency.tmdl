@@ -1,0 +1,89 @@
+table 'Fact Persistency'
+	lineageTag: 0ad2d35c-5ba2-4f17-ae91-54c0137c1591
+
+	column policy_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 0b01271f-1446-42e7-a275-25952931f922
+		summarizeBy: sum
+		sourceColumn: policy_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column agent_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 1388644a-38fb-4592-81a8-b0b713bb243e
+		summarizeBy: none
+		sourceColumn: agent_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_id
+		dataType: int64
+		formatString: 0
+		lineageTag: f1d148a6-8471-4f6f-a28e-2e249a748d8d
+		summarizeBy: none
+		sourceColumn: product_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column issue_date_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 8eaa6adc-1f9d-4bd0-92aa-095b8a26e6e8
+		summarizeBy: none
+		sourceColumn: issue_date_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column renewal_due_date_key
+		dataType: int64
+		formatString: 0
+		lineageTag: e6643cd2-3177-4b60-ae54-f8cde120c2ff
+		summarizeBy: sum
+		sourceColumn: renewal_due_date_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column renewal_status
+		dataType: string
+		lineageTag: df80efc2-7d64-4a42-8bc8-003b37a68412
+		summarizeBy: none
+		sourceColumn: renewal_status
+
+		annotation SummarizationSetBy = Automatic
+
+	column premium_usd
+		dataType: double
+		lineageTag: 1cc54d26-082d-4924-96f0-222b9f75256e
+		summarizeBy: sum
+		sourceColumn: premium_usd
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Policy Age Years' =
+			LOOKUPVALUE('Dim Date'[year],
+			                'Dim Date'[date_key],'Fact Persistency'[renewal_due_date_key]) - RELATED('Dim Date'[year])
+		formatString: 0
+		lineageTag: 82f2fb42-332f-4d44-b42b-b43c323096c6
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Fact Persistency' = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\Satish Oleti\Downloads\Assignment\data\fact_persistency.csv"),[Delimiter=",", Columns=7, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"policy_id", Int64.Type}, {"agent_id", Int64.Type}, {"product_id", Int64.Type}, {"issue_date_key", Int64.Type}, {"renewal_due_date_key", Int64.Type}, {"renewal_status", type text}, {"premium_usd", type number}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

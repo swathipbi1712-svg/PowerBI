@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "Assignment"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "241e9001-134c-4afd-ba1e-32282fb2c14b"
+  }
+}
